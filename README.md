@@ -48,25 +48,3 @@ src/
 fonts/                                     # Poppins & Cairo webfonts
 scripts/build-portal-styles.mjs            # Regenerate portal CSS from React source
 ```
-
-## Integration guide (for receiving team)
-
-1. **Authentication** — Replace the mock in `src/app/core/services/auth.service.ts` with a real `HttpClient` call to your broker login API. Use `environment.apiUrl` from `src/environments/`.
-
-2. **Environment** — Set `apiUrl` in:
-   - `src/environments/environment.ts` (development)
-   - `src/environments/environment.production.ts` (production build)
-
-3. **Logo & branding** — Two logo versions (same brand, different use):
-   - **In-app header** — `PORTAL_ASSETS.logoApp` → `assets/branding/alwataniya-logo-app.png`
-   - **Browser tab / favicon** — `PORTAL_ASSETS.logoFavicon` → `assets/branding/alwataniya-logo-favicon.png` (also referenced in `src/index.html`)
-   - **Background** — `PORTAL_ASSETS.background` → `assets/branding/brand-background.avif`
-
-4. **Copy / i18n** — All UI strings are in `src/app/i18n/portal-copy.ts`. Default language is Arabic (`ar`).
-
-5. **What to exclude when sharing** — Do not ship `node_modules/`, `dist/`, or `.angular/`. Recipients run `npm install` locally.
-
-## Notes
-
-- Login currently validates non-empty email/password with a simulated delay (`mockAuthDelayMs`).
-- Default language is Arabic; users switch via the EN/ع control on the brand panel.
