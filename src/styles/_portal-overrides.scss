@@ -1,0 +1,209 @@
+/* ============================================================
+   Portal layout overrides for Angular
+   ============================================================ */
+
+.brand-top .lang-switch,
+.brand-mobile-header .lang-switch {
+  margin-bottom: 0;
+  align-self: center;
+}
+
+.brand-top-identity {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.brand-top-identity .brand-name strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.brand-top-lang {
+  align-self: center;
+  margin-bottom: 0;
+}
+
+@media (min-width: 901px) {
+  .portal-shell > app-brand-panel,
+  .portal-shell > app-login-form {
+    align-self: stretch;
+    height: 100%;
+    min-height: 0;
+  }
+
+  .portal-brand-panel,
+  .portal-form-panel {
+    height: 100%;
+    min-height: 0;
+  }
+}
+
+@media (max-width: 900px) {
+  .brand-mobile-identity {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .brand-mobile-identity .brand-name {
+    min-width: 0;
+    overflow: hidden;
+    flex: 1;
+  }
+
+  .brand-mobile-header .brand-logo-wrap {
+    width: 52px;
+    height: 52px;
+  }
+
+  .brand-mobile-identity .brand-name strong {
+    display: block;
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 1rem;
+    line-height: 1.2;
+  }
+
+  /* Shared hero typography — natural height, no reserved slots */
+  .brand-headline,
+  .brand-slogan {
+    letter-spacing: 0 !important;
+    line-height: 1.22 !important;
+    word-break: normal !important;
+    hyphens: none !important;
+    text-align: center !important;
+    text-wrap: balance;
+    margin-inline: auto;
+    max-width: 95%;
+  }
+
+  .form-welcome,
+  .form-welcome-sub {
+    letter-spacing: 0 !important;
+    text-align: start;
+  }
+
+  [dir='rtl'] .form-welcome,
+  [dir='rtl'] .form-welcome-sub {
+    text-align: start;
+  }
+
+  .secure-note {
+    white-space: normal;
+    text-align: center;
+    line-height: 1.35;
+    max-width: 100%;
+  }
+
+  /* Tablet: scroll instead of clipping when Arabic copy is taller */
+  .portal-form-panel {
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* Phone: compact layout so EN and AR both fit one screen */
+@media (max-width: 599px) {
+  .portal-brand-panel {
+    height: 44vw;
+    max-height: 210px;
+    min-height: 175px;
+  }
+
+  .brand-main {
+    gap: 0.2rem !important;
+    padding: 0.2rem 1rem 0.35rem !important;
+  }
+
+  .brand-headline,
+  .brand-slogan {
+    font-size: 1.2rem !important;
+    line-height: 1.22 !important;
+  }
+
+  .form-inner {
+    padding: 1.15rem 1rem !important;
+    padding-bottom: max(1rem, env(safe-area-inset-bottom, 1rem)) !important;
+  }
+
+  .form-header {
+    margin-bottom: 0.6rem !important;
+  }
+
+  .form-welcome {
+    font-size: 1.2rem !important;
+    line-height: 1.2 !important;
+    margin-bottom: 0.15rem !important;
+  }
+
+  .form-welcome-sub {
+    font-size: 0.84rem !important;
+    line-height: 1.38 !important;
+  }
+
+  .portal-form {
+    gap: 0.5rem !important;
+  }
+
+  .field-group {
+    gap: 0.28rem !important;
+  }
+
+  .field-label {
+    font-size: 0.8rem !important;
+  }
+
+  .field-input {
+    padding-block: 0.5rem !important;
+    font-size: 0.88rem !important;
+  }
+
+  .remember-text,
+  .forgot-btn {
+    font-size: 0.8rem !important;
+  }
+
+  .submit-btn {
+    padding-block: 0.65rem !important;
+    margin-top: 0.15rem !important;
+  }
+
+  .support-link {
+    font-size: 0.8rem !important;
+    margin-block: 0.35rem !important;
+  }
+
+  .form-footer {
+    padding-top: 0.35rem !important;
+    gap: 0.15rem !important;
+  }
+
+  .secure-note {
+    font-size: 0.66rem !important;
+    line-height: 1.32 !important;
+  }
+
+  .copyright {
+    font-size: 0.66rem !important;
+  }
+}
+
+@media (max-width: 380px) {
+  .brand-headline,
+  .brand-slogan {
+    font-size: 1.1rem !important;
+  }
+
+  .form-inner {
+    padding: 1rem 0.85rem !important;
+  }
+}
+
+.portal-form-panel {
+  overflow: hidden;
+}

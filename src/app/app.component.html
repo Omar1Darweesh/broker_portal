@@ -1,0 +1,10 @@
+<div class="portal-shell" [class.is-ar]="isAr()" [attr.lang]="lang()">
+  <app-login-form [copy]="copy()" [dir]="dir()" [year]="year" />
+  <app-brand-panel
+    [copy]="copy()"
+    [dir]="dir()"
+    [lang]="lang()"
+    [isAr]="isAr()"
+    (langChange)="setLang($event)"
+  />
+</div>

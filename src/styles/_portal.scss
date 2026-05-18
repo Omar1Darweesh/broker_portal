@@ -1,0 +1,1374 @@
+﻿/* ============================================================
+   DESIGN TOKENS
+   ============================================================ */
+:root {
+  --primary: #1c2f80;
+  --primary-dark: #152364;
+  --primary-mid: #243f9a;
+  --primary-light: #3a5dbf;
+  --accent: #d9a521;
+  --accent-light: #f0c945;
+  --text: #1d2a4b;
+  --muted: #5a6e94;
+  --border: #dce4f2;
+  --input-bg: #f8faff;
+  --shadow-btn: 0 8px 24px -4px rgba(28, 47, 128, 0.45);
+  --radius-input: 14px;
+  --radius-btn: 14px;
+  --ease: 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ============================================================
+   RESET
+   ============================================================ */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+a {
+  font-family: inherit;
+}
+
+ul {
+  list-style: none;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+/* ============================================================
+   ROOT — lock body height & kill scroll on desktop
+   ============================================================ */
+html {
+  height: 100%;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+body,
+app-root {
+  height: 100%;
+  overflow: hidden;
+  /* mobile overrides this below */
+}
+
+body {
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+}
+
+input,
+textarea,
+select {
+  user-select: text;
+  -webkit-user-select: text;
+  -webkit-touch-callout: default;
+}
+
+/* ============================================================
+   FULL-SCREEN SPLIT SHELL
+   brand = LEFT 58%  |  form = RIGHT 42%  (desktop default)
+   The shell is always direction:ltr so columns never flip.
+   ============================================================ */
+.portal-shell {
+  display: grid;
+  grid-template-columns: 58fr 42fr;
+  grid-template-areas: "brand form";
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  direction: ltr;
+}
+
+
+.portal-shell > app-login-form {
+  grid-area: form;
+  min-width: 0;
+  min-height: 0;
+  display: block;
+}
+
+.portal-shell > app-brand-panel {
+  grid-area: brand;
+  min-width: 0;
+  min-height: 0;
+  display: block;
+}
+
+
+@media (min-width: 901px) {
+
+  /* Arabic desktop: form LEFT 42% | brand RIGHT 58% */
+  .portal-shell.is-ar {
+    grid-template-columns: 42fr 58fr;
+    grid-template-areas: "form brand";
+  }
+}
+
+/* ============================================================
+   FORM PANEL
+   overflow:hidden = no scroll ever on desktop.
+   clamp() with dvh units = content auto-compresses as the
+   viewport shrinks so nothing is ever cut off.
+   ============================================================ */
+.portal-form-panel {
+  position: relative;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  background: #ffffff;
+}
+
+.form-inner {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  padding: clamp(0.5rem, 2dvh, 1.5rem) 2rem;
+  box-sizing: border-box;
+}
+
+/* ============================================================
+   FORM PANEL — Animated honeycomb (real SVG DOM polygons)
+   Two absolutely-positioned SVGs, one per corner.
+   Each <polygon> gets its own animationDelay so the wave
+   travels outward from the corner like a ripple.
+   States:  resting  = white fill + coloured frame (outline)
+            activated = solid brand colour + near-black frame
+   ============================================================ */
+.form-deco {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: visible;
+  z-index: 0;
+}
+
+.form-deco-svg {
+  position: absolute;
+  overflow: visible;
+}
+
+/* Top-right SVG — navy (mirrored to match gold corner treatment) */
+.form-deco-tr {
+  top: -1px;
+  right: -48px;
+  width: calc(72% + 48px);
+  height: 78%;
+  -webkit-mask-image: radial-gradient(ellipse 110% 110% at 100% 0%,
+      #000 0%,
+      #000 22%,
+      rgba(0, 0, 0, .9) 38%,
+      rgba(0, 0, 0, .5) 52%,
+      rgba(0, 0, 0, .15) 62%,
+      transparent 72%);
+  mask-image: radial-gradient(ellipse 110% 110% at 100% 0%,
+      #000 0%,
+      #000 22%,
+      rgba(0, 0, 0, .9) 38%,
+      rgba(0, 0, 0, .5) 52%,
+      rgba(0, 0, 0, .15) 62%,
+      transparent 72%);
+}
+
+/* Bottom-left SVG — gold */
+.form-deco-bl {
+  bottom: -1px;
+  left: -48px;
+  width: calc(72% + 48px);
+  height: 78%;
+  -webkit-mask-image: radial-gradient(ellipse 110% 110% at 0% 100%,
+      #000 0%,
+      #000 22%,
+      rgba(0, 0, 0, .9) 38%,
+      rgba(0, 0, 0, .5) 52%,
+      rgba(0, 0, 0, .15) 62%,
+      transparent 72%);
+  mask-image: radial-gradient(ellipse 110% 110% at 0% 100%,
+      #000 0%,
+      #000 22%,
+      rgba(0, 0, 0, .9) 38%,
+      rgba(0, 0, 0, .5) 52%,
+      rgba(0, 0, 0, .15) 62%,
+      transparent 72%);
+}
+
+/* ── Hex polygon base ── */
+.hc {
+  stroke-width: 1.3;
+  stroke-linejoin: round;
+  animation-duration: 3.5s;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
+
+/* Resting: white fill + coloured frame */
+.hc-navy {
+  fill: #ffffff;
+  stroke: #1c2f80;
+  stroke-opacity: 0.38;
+  animation-name: hex-wave-navy;
+}
+
+.hc-gold {
+  fill: #ffffff;
+  stroke: #d9a521;
+  stroke-opacity: 0.42;
+  animation-name: hex-wave-gold;
+}
+
+/* ── Wave keyframes ──
+   0 % / 100 % = resting  (white fill, coloured frame)
+   38 %–55 %   = activated (solid colour, near-black frame)
+   Smooth ease-in-out interpolation between states. */
+@keyframes hex-wave-navy {
+
+  0%,
+  100% {
+    fill: #ffffff;
+    stroke: #1c2f80;
+    stroke-opacity: 0.38;
+    stroke-width: 1.3;
+  }
+
+  38%,
+  55% {
+    fill: #1c2f80;
+    stroke: #080f30;
+    stroke-opacity: 0.90;
+    stroke-width: 1.7;
+  }
+}
+
+@keyframes hex-wave-gold {
+
+  0%,
+  100% {
+    fill: #ffffff;
+    stroke: #d9a521;
+    stroke-opacity: 0.42;
+    stroke-width: 1.3;
+  }
+
+  38%,
+  55% {
+    fill: #d9a521;
+    stroke: #5c3a05;
+    stroke-opacity: 0.90;
+    stroke-width: 1.7;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hc {
+    animation: none;
+  }
+}
+
+/* ── Language switcher ── */
+.lang-switch {
+  align-self: flex-start;
+  display: inline-flex;
+  background: #f0f4fb;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 3px;
+  gap: 2px;
+  margin-bottom: clamp(0.3rem, 1.2dvh, 1rem);
+}
+
+[dir="rtl"] .lang-switch {
+  align-self: flex-end;
+}
+
+.lang-btn {
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  transition: background var(--ease), color var(--ease);
+}
+
+.lang-btn:hover:not(.active) {
+  background: rgba(28, 47, 128, 0.07);
+  color: var(--primary);
+}
+
+.lang-btn.active {
+  background: var(--primary);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(28, 47, 128, 0.25);
+}
+
+/* ── Form header ── */
+.form-header {
+  margin-bottom: clamp(0.5rem, 1.4dvh, 1.1rem);
+}
+
+.form-welcome {
+  font-size: clamp(1.15rem, 2dvh, 1.5rem);
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: 0;
+  line-height: 1.25;
+  margin-bottom: 0.25rem;
+}
+
+.form-welcome-sub {
+  font-size: 0.9rem;
+  font-weight: 400;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+/* ── Error banner ── */
+.error-banner {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: #fff5f5;
+  border: 1px solid #fecaca;
+  color: #b91c1c;
+  border-radius: 12px;
+  padding: 0.65rem 1rem;
+  font-size: 0.87rem;
+  font-weight: 500;
+  margin-bottom: clamp(0.5rem, 1dvh, 1.2rem);
+}
+
+.error-icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+/* ── Form fields ── */
+.portal-form {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.4rem, 0.9dvh, 0.8rem);
+}
+
+.field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.field-label {
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-icon {
+  position: absolute;
+  inset-inline-start: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  color: var(--muted);
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color var(--ease);
+  flex-shrink: 0;
+}
+
+.input-icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.field-input {
+  width: 100%;
+  border: 1.5px solid var(--border);
+  background: var(--input-bg);
+  color: var(--text);
+  border-radius: var(--radius-input);
+  padding-block: clamp(0.4rem, 0.85dvh, 0.7rem);
+  padding-inline-start: 3rem;
+  padding-inline-end: 1rem;
+  font-size: 0.93rem;
+  font-family: inherit;
+  line-height: 1.4;
+  transition: border-color var(--ease), box-shadow var(--ease), background var(--ease);
+  outline: none;
+}
+
+.field-input.has-toggle {
+  padding-inline-end: 3rem;
+}
+
+.field-input::placeholder {
+  color: #a8b5cc;
+  font-size: 0.88rem;
+}
+
+.field-input:focus {
+  border-color: var(--primary-light);
+  background: #fff;
+  box-shadow: 0 0 0 3.5px rgba(28, 47, 128, 0.1);
+}
+
+.input-wrap:focus-within .input-icon {
+  color: var(--primary);
+}
+
+/* ── Password toggle ── */
+.pwd-toggle {
+  position: absolute;
+  inset-inline-end: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 30px;
+  height: 30px;
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  transition: color var(--ease), background var(--ease);
+  padding: 0;
+}
+
+.pwd-toggle svg {
+  width: 17px;
+  height: 17px;
+}
+
+.pwd-toggle:hover {
+  color: var(--primary);
+  background: rgba(28, 47, 128, 0.07);
+}
+
+/* ── Remember / Forgot ── */
+.form-options {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: -0.1rem;
+}
+
+.remember-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+.remember-check {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--primary);
+  cursor: pointer;
+}
+
+.remember-text {
+  font-size: 0.84rem;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.forgot-btn {
+  border: none;
+  background: transparent;
+  color: var(--primary);
+  font-size: 0.84rem;
+  font-weight: 600;
+  padding: 0;
+  transition: color var(--ease);
+}
+
+.forgot-btn:hover {
+  color: var(--primary-mid);
+  text-decoration: underline;
+}
+
+/* ── Submit button ── */
+.submit-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  margin-top: 0.15rem;
+  border: none;
+  border-radius: var(--radius-btn);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-mid) 60%, var(--primary-light) 100%);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.97rem;
+  letter-spacing: 0.02em;
+  padding: clamp(0.45rem, 0.85dvh, 0.75rem) 1.25rem;
+  cursor: pointer;
+  box-shadow: var(--shadow-btn);
+  position: relative;
+  overflow: hidden;
+  transition: filter var(--ease), transform var(--ease), box-shadow var(--ease);
+}
+
+.submit-btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.09) 0%, transparent 55%);
+}
+
+.submit-btn:hover:not(:disabled) {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+  box-shadow: 0 12px 28px -4px rgba(28, 47, 128, 0.5);
+}
+
+.submit-btn:active:not(:disabled) {
+  transform: translateY(0);
+  filter: brightness(1);
+}
+
+.submit-btn:disabled {
+  opacity: 0.72;
+  cursor: not-allowed;
+}
+
+.submit-btn.loading {
+  pointer-events: none;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spinner {
+  width: 18px;
+  height: 18px;
+  border: 2.5px solid rgba(255, 255, 255, 0.35);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+
+/* ── Divider ── */
+.form-divider {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: clamp(0.4rem, 0.9dvh, 0.9rem) 0 clamp(0.35rem, 0.7dvh, 0.7rem);
+}
+
+.form-divider span {
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.form-divider em {
+  font-style: normal;
+  font-size: 0.78rem;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+/* ── Register row ── */
+.register-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-size: 0.88rem;
+  color: var(--muted);
+}
+
+.register-btn {
+  border: none;
+  background: transparent;
+  color: var(--primary);
+  font-weight: 700;
+  font-size: 0.88rem;
+  padding: 0;
+  transition: color var(--ease);
+}
+
+.register-btn:hover {
+  color: var(--primary-mid);
+  text-decoration: underline;
+}
+
+/* ── Support link ── */
+.support-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-top: clamp(0.2rem, 0.6dvh, 0.5rem);
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 0.82rem;
+  font-weight: 500;
+  transition: color var(--ease);
+}
+
+.support-icon {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
+.support-link:hover {
+  color: var(--primary);
+}
+
+/* ── Footer ── */
+.form-footer {
+  padding-top: clamp(0.3rem, 0.8dvh, 1rem);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.secure-note {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.76rem;
+  color: #8a9fbe;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.secure-icon {
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
+}
+
+.copyright {
+  font-size: 0.74rem;
+  color: #a0b0cc;
+}
+
+/* ============================================================
+   BRAND PANEL
+   ============================================================ */
+.portal-brand-panel {
+  position: relative;
+  overflow: hidden;
+  height: 100%;
+}
+
+.brand-bg-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
+.brand-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom,
+      rgba(12, 22, 75, 0.78) 0%,
+      rgba(20, 36, 110, 0.55) 30%,
+      rgba(18, 32, 100, 0.50) 55%,
+      rgba(8, 18, 65, 0.88) 100%);
+}
+
+.brand-content {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 2.8rem 3.2rem;
+  color: #fff;
+}
+
+/* ── Logo row ── */
+.brand-top {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+/* Group logo + name together */
+.brand-top-identity {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.brand-logo-wrap {
+  width: 96px;
+  height: 96px;
+  overflow: hidden;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.brand-logo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 5px;
+}
+
+.brand-logo-fallback {
+  display: none;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #fff;
+}
+
+.brand-name strong {
+  display: block;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+
+/* ── Center hero text ── */
+.brand-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1.2rem;
+  padding: 1rem 0;
+}
+
+.brand-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba(217, 165, 33, 0.18);
+  border: 1px solid rgba(217, 165, 33, 0.35);
+  color: #f0c945;
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 0.3rem 0.85rem;
+  border-radius: 999px;
+  width: fit-content;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.brand-headline {
+  font-size: 2.6rem;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1.18;
+  letter-spacing: 0;
+  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.35);
+}
+
+.brand-tagline {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.82);
+  line-height: 1.65;
+  max-width: 38ch;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.25);
+  text-wrap: pretty;
+}
+
+.portal-shell.is-ar .brand-tagline,
+.portal-shell:not(.is-ar) .brand-tagline {
+  max-width: 38ch;
+}
+
+.brand-slogan {
+  font-size: 1.5rem;
+  font-weight: 800;
+  line-height: 1.3;
+  margin-bottom: 0.5rem;
+  letter-spacing: 0;
+}
+
+.brand-slogan-gradient {
+  background: linear-gradient(to right, var(--accent), #facc15, #fef9c3);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3));
+}
+
+/* Lang toggle inside brand-top row — frosted white on dark photo, compact size */
+.brand-top-lang {
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(8px);
+  flex-shrink: 0;
+  align-self: center;
+  margin-bottom: 0;
+}
+
+.brand-top-lang .lang-btn {
+  color: var(--text);
+  padding: 0.15rem 0.5rem;
+  font-size: 0.68rem;
+}
+
+.brand-top-lang .lang-btn.active {
+  background: var(--primary);
+  color: #fff;
+}
+
+.brand-top-lang .lang-btn:hover:not(.active) {
+  background: rgba(28, 47, 128, 0.08);
+  color: var(--primary);
+}
+
+/* Mobile-only header — hidden on desktop
+   direction is inherited from brand-content (dir={dir}), so:
+   English (LTR): logo LEFT, toggle RIGHT
+   Arabic  (RTL): logo RIGHT, toggle LEFT */
+.brand-mobile-header {
+  display: none;
+}
+
+/* ── Feature list ── */
+.brand-features {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.05rem;
+}
+
+.brand-feature {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.feature-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 11px;
+  background: rgba(217, 165, 33, 0.18);
+  border: 1px solid rgba(217, 165, 33, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--accent);
+  box-shadow: 0 0 0 1px rgba(217, 165, 33, 0.25) inset;
+  backdrop-filter: blur(4px);
+}
+
+.feature-icon svg {
+  width: 17px;
+  height: 17px;
+}
+
+.brand-feature>div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.brand-feature strong {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.brand-feature span {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.68);
+  line-height: 1.45;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+/* Landscape phones — too short: allow scroll as last resort */
+@media (max-height: 500px) {
+  .portal-form-panel {
+    overflow-y: auto;
+    justify-content: flex-start;
+  }
+}
+
+/* Landscape small phone — split unchanged but clamp handles sizing */
+@media (max-height: 500px) and (orientation: landscape) {
+  .portal-shell {
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas: "brand form";
+    height: 100dvh;
+    overflow: hidden;
+  }
+
+  .portal-shell.is-ar {
+    grid-template-areas: "form brand";
+  }
+
+  .portal-brand-panel {
+    height: 100dvh;
+  }
+
+  .brand-content {
+    padding: 1.2rem 1.6rem;
+  }
+
+  .brand-headline {
+    font-size: 1.2rem;
+  }
+
+  .brand-features,
+  .brand-tagline,
+  .brand-slogan,
+  .brand-badge {
+    display: none;
+  }
+}
+
+/* ── Tablet (600–900px): stacked, NO SCROLL — fits one screen ── */
+@media (min-width: 600px) and (max-width: 900px) {
+
+  /* Keep body/root locked — NO height:auto here */
+  .portal-shell {
+    grid-template-columns: 1fr;
+    grid-template-areas: "brand" "form";
+    /* Brand = fixed strip, form = fills the rest */
+    grid-template-rows: clamp(130px, 26dvh, 260px) 1fr;
+    height: 100dvh;
+    overflow: hidden;
+  }
+
+  .portal-shell.is-ar {
+    grid-template-columns: 1fr;
+    grid-template-areas: "brand" "form";
+  }
+
+  .portal-brand-panel {
+    height: clamp(130px, 26dvh, 260px);
+  }
+
+  .brand-content {
+    padding: 0;
+    justify-content: space-between;
+  }
+
+  .brand-mobile-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.9rem 1.6rem;
+    background: linear-gradient(to bottom, rgba(8, 16, 60, 0.72) 0%, transparent 100%);
+    flex-shrink: 0;
+    gap: 0.75rem;
+  }
+
+  .brand-mobile-identity {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    flex: 1 1 auto;   /* allow shrinking so lang-toggle is never pushed off */
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .brand-mobile-header .brand-logo-wrap {
+    width: 52px;
+    height: 52px;
+    flex-shrink: 0;
+  }
+
+  .brand-mobile-header .brand-name strong {
+    font-size: 1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* Smaller toggle in mobile header */
+  .brand-mobile-header .lang-switch {
+    padding: 2px;
+    flex-shrink: 0;
+    align-self: center;
+  }
+
+  .brand-mobile-header .lang-btn {
+    padding: 0.1rem 0.38rem;
+    font-size: 0.62rem;
+  }
+
+  .brand-lang-switch {
+    background: rgba(255, 255, 255, 0.92);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(8px);
+  }
+
+  .brand-lang-switch .lang-btn {
+    color: var(--text);
+  }
+
+  .brand-lang-switch .lang-btn.active {
+    background: var(--primary);
+    color: #fff;
+  }
+
+  .brand-lang-switch .lang-btn:hover:not(.active) {
+    background: rgba(28, 47, 128, 0.08);
+    color: var(--primary);
+  }
+
+  .brand-top {
+    display: none;
+  }
+
+  .brand-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 0.4rem 1.2rem;
+    gap: 0.3rem;
+    overflow: hidden;
+  }
+
+  .brand-badge {
+    font-size: 0.68rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+  }
+
+  .brand-headline {
+    font-size: clamp(1.05rem, 2.2dvh, 1.35rem);
+    line-height: 1.28;
+    letter-spacing: 0;
+    word-break: normal;
+    hyphens: none;
+    max-width: 95%;
+    margin-inline: auto;
+  }
+
+  .brand-slogan {
+    font-size: clamp(1.05rem, 2.2dvh, 1.35rem);
+    line-height: 1.28;
+    letter-spacing: 0;
+    word-break: normal;
+    hyphens: none;
+    max-width: 95%;
+    margin-bottom: 0;
+    margin-inline: auto;
+  }
+
+  .brand-tagline {
+    display: none;
+  }
+
+  .brand-features {
+    display: none;
+  }
+
+  /* Form fills remaining height — NO SCROLL */
+  .portal-form-panel {
+    overflow: hidden;
+    justify-content: center;
+    padding: 0;
+  }
+
+  .form-inner {
+    max-width: 480px;
+    width: 100%;
+    align-self: center;
+    padding: clamp(0.5rem, 1.5dvh, 1.2rem) clamp(1.2rem, 4vw, 2rem);
+  }
+}
+
+/* ── Phone (≤599px): scrollable — content too tall to compress further ── */
+@media (max-width: 599px) {
+
+  body,
+  app-root {
+    height: auto;
+    overflow: visible;
+  }
+
+  .portal-shell {
+    grid-template-columns: 1fr;
+    grid-template-areas: "brand" "form";
+    grid-template-rows: auto 1fr;
+    height: auto;
+    min-height: 100svh;
+    overflow: visible;
+  }
+
+  .portal-shell.is-ar {
+    grid-template-columns: 1fr;
+    grid-template-areas: "brand" "form";
+  }
+
+  .portal-brand-panel {
+    height: 52vw;
+    max-height: 260px;
+    min-height: 200px;
+  }
+
+  .brand-content {
+    padding: 0;
+    justify-content: space-between;
+  }
+
+  .brand-mobile-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.85rem 1.1rem;
+    background: linear-gradient(to bottom, rgba(8, 16, 60, 0.72) 0%, transparent 100%);
+    flex-shrink: 0;
+    gap: 0.75rem;
+  }
+
+  .brand-mobile-identity {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    flex: 1 1 auto;   /* allow shrinking so lang-toggle is never pushed off */
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .brand-mobile-header .brand-name strong {
+    font-size: 1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* Smaller toggle in mobile header */
+  .brand-mobile-header .lang-switch {
+    padding: 2px;
+    flex-shrink: 0;
+    align-self: center;
+  }
+
+  .brand-mobile-header .lang-btn {
+    padding: 0.1rem 0.38rem;
+    font-size: 0.62rem;
+  }
+
+  .brand-lang-switch {
+    background: rgba(255, 255, 255, 0.92);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(8px);
+  }
+
+  .brand-lang-switch .lang-btn {
+    color: var(--text);
+  }
+
+  .brand-lang-switch .lang-btn.active {
+    background: var(--primary);
+    color: #fff;
+  }
+
+  .brand-lang-switch .lang-btn:hover:not(.active) {
+    background: rgba(28, 47, 128, 0.08);
+    color: var(--primary);
+  }
+
+  .brand-top {
+    display: none;
+  }
+
+  .brand-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 0.5rem 1.2rem;
+    gap: 0.4rem;
+    overflow: hidden;
+  }
+
+  .brand-badge {
+    display: none;
+  }
+
+  .brand-headline {
+    font-size: 1.3rem;
+    line-height: 1.28;
+    letter-spacing: 0;
+    word-break: normal;
+    hyphens: none;
+    max-width: 95%;
+    margin-inline: auto;
+  }
+
+  .brand-slogan {
+    font-size: 1.3rem;
+    line-height: 1.28;
+    letter-spacing: 0;
+    word-break: normal;
+    hyphens: none;
+    max-width: 95%;
+    margin-inline: auto;
+  }
+
+  .brand-tagline {
+    display: none;
+  }
+
+  .brand-features {
+    display: none;
+  }
+
+  .portal-shell {
+    height: 100dvh;
+    max-height: 100dvh;
+    overflow: hidden;
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+
+  .portal-form-panel {
+    height: 100%;
+    min-height: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    justify-content: flex-start;
+    padding: 0;
+  }
+
+  .form-inner {
+    max-width: 480px;
+    width: 100%;
+    align-self: center;
+    padding: 1.15rem 1rem;
+    padding-bottom: max(1rem, env(safe-area-inset-bottom, 1rem));
+  }
+}
+
+/* ── Tiny phones ── */
+@media (max-width: 380px) {
+  .portal-brand-panel {
+    max-height: 200px;
+    min-height: 170px;
+  }
+
+  .brand-mobile-header {
+    padding: 0.7rem 0.9rem;
+  }
+
+  .brand-mobile-header .brand-logo-wrap {
+    width: 52px;
+    height: 52px;
+  }
+
+  .brand-mobile-header .brand-name strong {
+    font-size: 1.05rem;
+    white-space: nowrap;
+  }
+
+  .brand-headline {
+    font-size: 1.15rem;
+    line-height: 1.28;
+    letter-spacing: 0;
+  }
+
+  .brand-slogan {
+    font-size: 1.15rem;
+    line-height: 1.28;
+    letter-spacing: 0;
+  }
+
+  .portal-form-panel {
+    padding: 0;
+  }
+
+  .form-inner {
+    padding: 1.6rem 1rem;
+    padding-bottom: max(2.5rem, env(safe-area-inset-bottom, 2.5rem));
+  }
+
+  .form-welcome {
+    font-size: 1.25rem;
+  }
+
+  .lang-switch {
+    margin-bottom: 1.2rem;
+  }
+
+  .field-input {
+    font-size: 0.9rem;
+  }
+}
+.register-row { display: none !important; }
+
+/* Angular component hosts — fill grid tracks on tablet/desktop */
+@media (min-width: 600px) {
+  .portal-shell > app-brand-panel,
+  .portal-shell > app-login-form {
+    height: 100%;
+    min-height: 0;
+  }
+}
+
+@media (max-width: 599px) {
+  .portal-shell > app-brand-panel,
+  .portal-shell > app-login-form {
+    height: auto;
+    min-height: 0;
+  }
+}

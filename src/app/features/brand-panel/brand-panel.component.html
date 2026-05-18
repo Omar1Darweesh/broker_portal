@@ -1,0 +1,84 @@
+<aside class="portal-brand-panel" [attr.aria-label]="isAr() ? 'معلومات الشركة' : 'Company information'">
+  <img [src]="brandBackground" class="brand-bg-img" alt="" aria-hidden="true" />
+  <div class="brand-overlay" aria-hidden="true"></div>
+
+  <div class="brand-content" [attr.dir]="dir()">
+    <header class="brand-mobile-header" [attr.dir]="dir()">
+      <div class="brand-mobile-identity">
+        <app-brand-logo />
+        <div class="brand-name">
+          <strong>{{ copy().headline }}</strong>
+        </div>
+      </div>
+      <app-lang-switch
+        [lang]="lang()"
+        extraClass="brand-lang-switch"
+        (langChange)="onLangChange($event)"
+      />
+    </header>
+
+    <header class="brand-top">
+      <div class="brand-top-identity">
+        <app-brand-logo />
+        <div class="brand-name">
+          <strong>{{ copy().headline }}</strong>
+        </div>
+      </div>
+      <app-lang-switch
+        [lang]="lang()"
+        extraClass="brand-lang-switch brand-top-lang"
+        (langChange)="onLangChange($event)"
+      />
+    </header>
+
+    <div class="brand-main">
+      <div class="brand-badge">{{ copy().brandBadge }}</div>
+      <h1 class="brand-headline">{{ copy().headlineSub }}</h1>
+      @if (copy().slogan) {
+        <p class="brand-slogan"><span class="brand-slogan-gradient">{{ copy().slogan }}</span></p>
+      }
+      <p class="brand-tagline">{{ copy().tagline }}</p>
+    </div>
+
+    <ul class="brand-features" [attr.aria-label]="isAr() ? 'مميزات البوابة' : 'Portal features'">
+      <li class="brand-feature">
+        <span class="feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+            <polyline points="14 2 14 8 20 8" />
+            <line x1="8" y1="13" x2="16" y2="13" />
+            <line x1="8" y1="17" x2="12" y2="17" />
+          </svg>
+        </span>
+        <div>
+          <strong>{{ copy().feature1Title }}</strong>
+          <span>{{ copy().feature1Desc }}</span>
+        </div>
+      </li>
+      <li class="brand-feature">
+        <span class="feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+            <path d="M12 2L3 7v5c0 5.25 3.75 10.15 9 11.35C17.25 22.15 21 17.25 21 12V7L12 2z" />
+            <polyline points="9 12 11 14 15 10" />
+          </svg>
+        </span>
+        <div>
+          <strong>{{ copy().feature2Title }}</strong>
+          <span>{{ copy().feature2Desc }}</span>
+        </div>
+      </li>
+      <li class="brand-feature">
+        <span class="feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+            <circle cx="12" cy="12" r="10" />
+            <polyline points="12 6 12 12 16 14" />
+          </svg>
+        </span>
+        <div>
+          <strong>{{ copy().feature3Title }}</strong>
+          <span>{{ copy().feature3Desc }}</span>
+        </div>
+      </li>
+    </ul>
+  </div>
+</aside>

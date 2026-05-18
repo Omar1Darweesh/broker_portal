@@ -1,0 +1,97 @@
+/* ============================================================
+   Fonts — loaded from /fonts/ (see angular.json assets)
+   ============================================================ */
+@font-face {
+  font-family: 'Poppins';
+  src: url('/fonts/poppins-300-latin.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Poppins';
+  src: url('/fonts/poppins-400-latin.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Poppins';
+  src: url('/fonts/poppins-500-latin.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Poppins';
+  src: url('/fonts/poppins-600-latin.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Poppins';
+  src: url('/fonts/poppins-700-latin.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Poppins';
+  src: url('/fonts/poppins-800-latin.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Cairo';
+  src: url('/fonts/cairo-arabic.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 300 800;
+  font-display: swap;
+}
+
+/* ============================================================
+   Language fonts — same sizes for EN and AR; only family changes
+   ============================================================ */
+html[lang='en'] body,
+html[lang='en'] .portal-shell,
+html[lang='en'] .portal-shell * {
+  font-family: 'Poppins', sans-serif;
+}
+
+html[lang='ar'] body,
+html[lang='ar'] .portal-shell,
+html[lang='ar'] .portal-shell * {
+  font-family: 'Cairo', sans-serif;
+}
+
+/* Equal typography scale — EN and AR share the same sizes; only font family differs */
+html[lang='ar'] .form-welcome-sub,
+html[lang='en'] .form-welcome-sub {
+  font-size: 0.9rem;
+  font-weight: 400;
+  color: var(--muted);
+  letter-spacing: 0;
+}
+
+html[lang='ar'] .form-welcome,
+html[lang='en'] .form-welcome {
+  letter-spacing: 0;
+}
+
+html[lang='ar'] .brand-headline,
+html[lang='en'] .brand-headline,
+html[lang='ar'] .brand-slogan,
+html[lang='en'] .brand-slogan {
+  letter-spacing: 0;
+}
+
+@import 'styles/portal';
+@import 'styles/portal-overrides';
